@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harshit Raj | Full Stack Developer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #161616;
+            --text-color: #e0e0e0;
+            --accent-color: #00ff9d; /* Matrix Green */
+            --secondary-text: #888;
+            --hover-bg: #1f1f1f;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        /* Profile Area */
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        p.bio {
+            color: var(--secondary-text);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* The Links Grid */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .link-card {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #333;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            font-weight: bold;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .link-card i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            width: 25px; /* Fixed width for alignment */
+            text-align: center;
+        }
+
+        .link-card:hover {
+            border-color: var(--accent-color);
+            background-color: var(--hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 157, 0.1);
+        }
+
+        .link-card:hover i {
+            color: var(--accent-color);
+        }
+
+        /* Grouping Titles */
+        .section-title {
+            text-align: left;
+            font-size: 0.75rem;
+            color: var(--secondary-text);
+            margin: 1rem 0 0.5rem 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: var(--secondary-text);
+        }
+
+        .blinking-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background-color: var(--accent-color);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="profile-img">HR</div>
+
+        <h1>Harshit Raj</h1>
+        <p class="bio">
+            Full Stack Developer | IIT Madras<br>
+            <i>"Building in the open."</i>
+        </p>
+
+        <div class="links">
+            
+            <a href="mailto:hey@harshitspace.in" class="link-card" style="border-color: var(--accent-color);">
+                <i class="fa-solid fa-envelope"></i> hey@harshitspace.in
+            </a>
+
+            <div class="section-title">Code & Projects</div>
+            
+            <a href="https://github.com/harshitspace" target="_blank" class="link-card">
+                <i class="fa-brands fa-github"></i> GitHub
+            </a>
+            
+            <a href="https://leetcode.com/u/harshitspace" target="_blank" class="link-card">
+                <i class="fa-solid fa-code"></i> LeetCode
+            </a>
+            
+            <a href="https://hashnode.com/@harshitspace" target="_blank" class="link-card">
+                <i class="fa-brands fa-hashnode"></i> Hashnode
+            </a>
+            
+            <a href="https://www.producthunt.com/@harshitspace" target="_blank" class="link-card">
+                <i class="fa-brands fa-product-hunt"></i> Product Hunt
+            </a>
+
+            <div class="section-title">Socials</div>
+            
+            <a href="https://linkedin.com/in/harshitspace" target="_blank" class="link-card">
+                <i class="fa-brands fa-linkedin"></i> LinkedIn
+            </a>
+            
+            <a href="https://x.com/harshitspace" target="_blank" class="link-card">
+                <i class="fa-brands fa-x-twitter"></i> X (Twitter)
+            </a>
+            
+            <a href="https://instagram.com/harshitspace" target="_blank" class="link-card">
+                <i class="fa-brands fa-instagram"></i> Instagram
+            </a>
+            
+            <a href="https://youtube.com/@harshitspace" target="_blank" class="link-card">
+                <i class="fa-brands fa-youtube"></i> YouTube
+            </a>
+
+        </div>
+
+        <div class="footer">
+            user@harshitspace:~$ npm run world-domination<span class="blinking-cursor"></span>
+        </div>
+    </div>
+
+</body>
+</html>
