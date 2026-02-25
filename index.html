@@ -3,197 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Harshit Raj | Full Stack Developer & Data Science Student">
-    <title>Harshit Raj | Full Stack Developer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <title>Harshit Raj | ./portfolio.sh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-color: #0a0a0a;
-            --card-bg: #161616;
-            --text-color: #e0e0e0;
-            --accent-color: #00ff9d;
-            --secondary-text: #888;
-            --hover-bg: #1f1f1f;
+        :root { 
+            --sidebar-width: 320px;
+            --bg: #050505; 
+            --accent: #00ff9d; 
+            --text: #e0e0e0; 
+            --card: #0f0f0f;
+            --border: #222;
         }
-
+        
         body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            line-height: 1.6;
-            padding: 20px 0;
+            margin: 0; font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg); color: var(--text);
+            display: flex; min-height: 100vh; line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 1.5rem;
-            text-align: center;
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* --- SIDEBAR ARCHITECTURE --- */
+        aside {
+            width: var(--sidebar-width); position: fixed; height: 100vh;
+            border-right: 1px solid var(--border); display: flex; flex-direction: column;
+            justify-content: space-between; box-sizing: border-box; background: var(--bg);
+            z-index: 40; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 2.5rem;
         }
 
-        .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: var(--card-bg);
-            border: 2px solid var(--accent-color);
-            margin: 0 auto 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: var(--accent-color);
+        .sidebar-top { display: flex; flex-direction: column; width: 100%; }
+
+        .logo { font-size: 2.5rem; font-weight: bold; color: var(--accent); margin-bottom: 0.5rem; transition: 0.3s; }
+        .user-handle { color: #888; font-size: 0.9rem; margin-bottom: 2rem; }
+        
+        nav { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+        nav a {
+            color: #888; text-decoration: none; font-size: 1.1rem; 
+            transition: all 0.2s ease; display: flex; align-items: center;
+            padding: 0.5rem 1rem; border-left: 2px solid transparent;
+            cursor: pointer; white-space: nowrap; overflow: hidden;
+        }
+        nav a i { width: 30px; font-size: 1rem; text-align: center; margin-right: 10px; }
+        nav a:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+        
+        nav a.active { 
+            color: var(--accent); 
+            border-left: 2px solid var(--accent);
+            background: rgba(0, 255, 157, 0.05);
             font-weight: bold;
-            box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
         }
 
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            letter-spacing: -0.5px;
+        .resume-btn {
+            margin-top: 1.5rem; display: flex; align-items: center;
+            background: transparent; border: 1px dashed var(--accent);
+            color: var(--accent); padding: 0.8rem 1rem; cursor: pointer;
+            text-decoration: none; font-size: 0.9rem; transition: 0.3s;
+            white-space: nowrap; overflow: hidden;
+        }
+        .resume-btn i { width: 30px; font-size: 1.1rem; text-align: center; margin-right: 10px; }
+        .resume-btn:hover { background: rgba(0,255,157,0.1); box-shadow: 0 0 10px rgba(0,255,157,0.2); }
+
+        /* --- INTERACTIVE TERMINAL --- */
+        .mini-terminal {
+            background: #000; border: 1px solid #333; padding: 1rem; 
+            font-size: 0.85rem; height: 150px; display: flex; flex-direction: column;
+            border-top: 2px solid var(--accent); cursor: text; transition: 0.3s;
+        }
+        .terminal-icon-only { display: none; color: var(--accent); font-size: 1.5rem; cursor: pointer; text-align: center; }
+        .terminal-output { flex-grow: 1; overflow-y: auto; margin-bottom: 0.5rem; color: #aaa; }
+        .terminal-output p { margin: 0 0 5px 0; }
+        .terminal-input-line { display: flex; align-items: center; color: var(--accent); }
+        .terminal-input-line span { margin-right: 8px; }
+        .terminal-input-line input {
+            background: transparent; border: none; color: var(--text); 
+            font-family: inherit; font-size: inherit; outline: none; flex-grow: 1; width: 100%;
         }
 
-        p.bio {
-            color: var(--secondary-text);
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
+        /* --- MAIN CONTENT ARCHITECTURE --- */
+        main { 
+            margin-left: var(--sidebar-width); padding: 4rem; max-width: 900px; width: 100%; 
+            box-sizing: border-box; transition: margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+        
+        .page-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .page-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
+        h2 { color: var(--accent); font-size: 1.5rem; border-bottom: 1px dashed var(--border); padding-bottom: 0.5rem; margin-top: 0; text-transform: uppercase; }
 
-        .link-card {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            text-decoration: none;
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid #333;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            font-weight: bold;
-            font-size: 0.95rem;
-            position: relative;
-        }
+        /* Typing Effect */
+        #typewriter-text { min-height: 80px; display: inline; }
+        .cursor { display: inline-block; width: 8px; height: 1.2em; background-color: var(--accent); vertical-align: bottom; animation: blink 1s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        .link-card i {
-            margin-right: 15px;
-            font-size: 1.2rem;
-            width: 25px;
-            text-align: center;
-        }
+        /* Project Cards */
+        .card { background: var(--card); padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--border); position: relative; }
+        .card:hover { border-color: var(--accent); }
+        .status-code { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 0.8rem; color: var(--accent); background: rgba(0,255,157,0.1); padding: 2px 8px; border-radius: 4px; }
+        .tech-list { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem; font-size: 0.85rem;}
+        .tech-list span { border: 1px solid #333; padding: 4px 10px; color: #aaa; }
 
-        .link-card:hover {
-            border-color: var(--accent-color);
-            background-color: var(--hover-bg);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 255, 157, 0.1);
-        }
+        /* --- RESPONSIVE / COLLAPSIBLE SIDEBAR --- */
+        @media (max-width: 800px) {
+            :root { --sidebar-width: 80px; }
+            main { padding: 3rem 1.5rem; }
+            
+            /* Hide text elements in collapsed state */
+            aside:not(.expanded) .hide-on-collapse { display: none !important; }
+            
+            aside:not(.expanded) { padding: 2rem 0; align-items: center; }
+            aside:not(.expanded) .sidebar-top { align-items: center; }
+            aside:not(.expanded) .logo { font-size: 1.5rem; margin-bottom: 2rem; cursor: pointer; }
+            aside:not(.expanded) nav a { padding: 1rem 0; justify-content: center; width: 100%; border-left: none; }
+            aside:not(.expanded) nav a i { margin: 0; font-size: 1.2rem; }
+            aside:not(.expanded) .resume-btn { padding: 1rem 0; border: none; justify-content: center; width: 100%; margin-top: 1rem;}
+            aside:not(.expanded) .resume-btn i { margin: 0; font-size: 1.3rem; }
+            
+            /* Swap terminal UI on collapse */
+            aside:not(.expanded) .mini-terminal { background: transparent; border: none; padding: 1rem 0; height: auto; justify-content: center; }
+            aside:not(.expanded) .terminal-icon-only { display: block; }
+            aside:not(.expanded) .terminal-content { display: none; }
 
-        .link-card:hover i {
-            color: var(--accent-color);
-        }
-
-        .section-title {
-            text-align: left;
-            font-size: 0.75rem;
-            color: var(--secondary-text);
-            margin: 1rem 0 0.5rem 0.2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
-        }
-
-        .footer {
-            margin-top: 3rem;
-            font-size: 0.75rem;
-            color: var(--secondary-text);
-        }
-
-        .blinking-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 14px;
-            background-color: var(--accent-color);
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+            /* Expanded State (When user clicks logo or terminal icon on mobile) */
+            aside.expanded { width: 320px; box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="profile-img">HR</div>
+    <aside id="sidebar">
+        <div class="sidebar-top">
+            <div class="logo" onclick="toggleExpand()">HR.</div>
+            <div class="user-handle hide-on-collapse">user@harshitspace</div>
+            
+            <nav id="nav-menu">
+                <a onclick="navigate('about')" id="link-about" class="active" title="cd /about">
+                    <i class="fa-solid fa-terminal"></i> <span class="hide-on-collapse">cd /about</span>
+                </a>
+                <a onclick="navigate('projects')" id="link-projects" title="cd /projects">
+                    <i class="fa-solid fa-folder-open"></i> <span class="hide-on-collapse">cd /projects</span>
+                </a>
+                <a onclick="navigate('contact')" id="link-contact" title="cd /contact">
+                    <i class="fa-solid fa-satellite-dish"></i> <span class="hide-on-collapse">cd /contact</span>
+                </a>
+            </nav>
 
-        <h1>Harshit Raj</h1>
-        <p class="bio">
-            Full Stack Developer | IIT Madras<br>
-            <i>"Building in the open."</i>
-        </p>
-
-        <div class="links">
-            
-            <a href="mailto:hey@harshitspace.in" class="link-card" style="border-color: var(--accent-color);">
-                <i class="fa-solid fa-envelope"></i> hey@harshitspace.in
+            <a href="https://harshitspace.in/resume" target="_blank" class="resume-btn" title="Download Resume">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="hide-on-collapse">./download_resume.pdf</span>
             </a>
-
-            <div class="section-title">Code & Projects</div>
-            
-            <a href="https://github.com/harshitspace" target="_blank" class="link-card">
-                <i class="fa-brands fa-github"></i> GitHub
-            </a>
-            
-            <a href="https://leetcode.com/u/harshitspace" target="_blank" class="link-card">
-                <i class="fa-solid fa-code"></i> LeetCode
-            </a>
-            
-            <a href="https://hashnode.com/@harshitspace" target="_blank" class="link-card">
-                <i class="fa-brands fa-hashnode"></i> Hashnode
-            </a>
-            
-            <a href="https://www.producthunt.com/@harshitspace" target="_blank" class="link-card">
-                <i class="fa-brands fa-product-hunt"></i> Product Hunt
-            </a>
-
-            <div class="section-title">Socials</div>
-            
-            <a href="https://linkedin.com/in/harshitspace" target="_blank" class="link-card">
-                <i class="fa-brands fa-linkedin"></i> LinkedIn
-            </a>
-            
-            <a href="https://x.com/harshitspace" target="_blank" class="link-card">
-                <i class="fa-brands fa-x-twitter"></i> X (Twitter)
-            </a>
-            
-            <a href="https://instagram.com/harshitspace" target="_blank" class="link-card">
-                <i class="fa-brands fa-instagram"></i> Instagram
-            </a>
-            
-            <a href="https://youtube.com/@harshitspace" target="_blank" class="link-card">
-                <i class="fa-brands fa-youtube"></i> YouTube
-            </a>
-
         </div>
-
-        <div class="footer">
-            user@harshitspace:~$ npm run world-domination<span class="blinking-cursor"></span>
+        
+        <div class="mini-terminal">
+            <div class="terminal-icon-only" onclick="toggleExpand()" title="Open Terminal">
+                <i class="fa-solid fa-terminal"></i>
+            </div>
+            <div class="terminal-content hide-on-collapse" style="height: 100%; display: flex; flex-direction: column;" onclick="document.getElementById('cmd-input').focus()">
+                <div class="terminal-output" id="output">
+                    <p>Terminal active. Type 'help'.</p>
+                </div>
+                <div class="terminal-input-line">
+                    <span>~></span>
+                    <input type="text" id="cmd-input" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
         </div>
-    </div>
+    </aside>
 
+    <main id="main-content" onclick="closeSidebarOnMobile()">
+        
+        <section id="page-about" class="page-content active">
+            <h2>01. System.init()</h2>
+            
+            <div style="font-size: 1.1rem; color: #ccc; margin-top: 1.5rem; line-height: 1.8;">
+                <span id="typewriter-text"></span><span class="cursor"></span>
+            </div>
+            
+            <div style="margin-top: 3rem; color: #888; border-left: 2px solid #333; padding-left: 1rem;">
+                <p>Location: Bengaluru, IN</p>
+                <p>Target: Full-Stack Web Development</p>
+                <p>Core Stack: MERN, Python (FastAPI/Flask)</p>
+            </div>
+        </section>
+
+        <section id="page-projects" class="page-content">
+            <h2>02. Executable_Binaries</h2>
+            
+            <div class="card" style="margin-top: 2rem;">
+                <div class="status-code">[200 OK] AWS EC2</div>
+                <h3 style="margin: 0 0 0.5rem 0;">DevTinder</h3>
+                <p style="color:#aaa; font-size:0.95rem;">A professional networking platform tailored for developers to connect and collaborate. Engineered secure bi-directional matching.</p>
+                <div class="tech-list">
+                    <span>MongoDB</span><span>Express</span><span>React</span><span>Node.js</span><span>Socket.io</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="status-code">[200 OK] Firebase</div>
+                <h3 style="margin: 0 0 0.5rem 0;">NetflixGPT</h3>
+                <p style="color:#aaa; font-size:0.95rem;">Movie recommendation engine integrating Firebase authentication and Gemini API for intelligent content retrieval.</p>
+                <div class="tech-list">
+                    <span>React.js</span><span>Gemini API</span><span>Tailwind</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-contact" class="page-content">
+            <h2>03. Network_Requests</h2>
+            <p style="margin-top: 1rem; color: #aaa;">Connection protocols open for collaboration and opportunities.</p>
+            
+            <div style="margin-top: 2rem; background: #0a0a0a; padding: 2rem; border: 1px dashed #333;">
+                <p><i class="fa-solid fa-envelope" style="width: 30px; color: var(--accent);"></i> <a href="mailto:hey@harshitspace.in" style="color: var(--text); text-decoration: none;">hey@harshitspace.in</a></p>
+                <p><i class="fa-brands fa-github" style="width: 30px; color: var(--accent);"></i> <a href="https://github.com/harshitspace" style="color: var(--text); text-decoration: none;">github.com/harshitspace</a></p>
+                <p><i class="fa-brands fa-linkedin" style="width: 30px; color: var(--accent);"></i> <a href="https://linkedin.com/in/harshitspace" style="color: var(--text); text-decoration: none;">linkedin.com/in/harshitspace</a></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- 1. Typing Effect Logic ---
+        const textToType = "> Executing profile_init.sh...\n> Loading user data...\n> SUCCESS: Harshit Raj profile loaded.\n\nHello! I specialize in building robust backend architectures and seamless frontend experiences. Currently pursuing a B.S. in Data Science at IIT Madras while actively developing scalable full-stack applications.";
+        const typeTarget = document.getElementById("typewriter-text");
+        let typeIndex = 0;
+        let isTyping = false;
+        
+        function typeWriter() {
+            if (typeIndex < textToType.length) {
+                if(textToType.charAt(typeIndex) === '\n') {
+                    typeTarget.innerHTML += '<br>';
+                } else {
+                    typeTarget.innerHTML += textToType.charAt(typeIndex);
+                }
+                typeIndex++;
+                setTimeout(typeWriter, Math.random() * 25 + 10); 
+            } else {
+                isTyping = false;
+            }
+        }
+
+        // --- 2. Navigation / Multi-Page Simulation ---
+        function navigate(pageId) {
+            document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            
+            document.querySelectorAll('#nav-menu a').forEach(link => link.classList.remove('active'));
+            document.getElementById('link-' + pageId).classList.add('active');
+
+            // Trigger typing effect only if navigating to 'about' and it hasn't finished
+            if (pageId === 'about' && typeIndex === 0 && !isTyping) {
+                isTyping = true;
+                setTimeout(typeWriter, 400);
+            }
+
+            closeSidebarOnMobile();
+            window.scrollTo(0,0);
+        }
+
+        // Start typing on initial load
+        isTyping = true;
+        setTimeout(typeWriter, 600);
+
+        // --- 3. Mobile Sidebar Expand/Collapse Logic ---
+        const sidebar = document.getElementById('sidebar');
+        function toggleExpand() {
+            if (window.innerWidth <= 800) {
+                sidebar.classList.toggle('expanded');
+                if(sidebar.classList.contains('expanded')) {
+                    setTimeout(() => document.getElementById('cmd-input').focus(), 300);
+                }
+            }
+        }
+        function closeSidebarOnMobile() {
+            if (window.innerWidth <= 800 && sidebar.classList.contains('expanded')) {
+                sidebar.classList.remove('expanded');
+            }
+        }
+
+        // --- 4. Interactive Terminal Logic ---
+        const input = document.getElementById("cmd-input");
+        const output = document.getElementById("output");
+
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                const cmd = input.value.trim().toLowerCase();
+                let response = "";
+
+                output.innerHTML += `<p style="color: #fff;">~> ${cmd}</p>`;
+
+                switch(cmd) {
+                    case "help":
+                        response = "Commands: clear, whoami, stack, cd /about, cd /projects, cat resume";
+                        break;
+                    case "whoami":
+                        response = "Harshit Raj | Full-Stack Dev | harshitspace admin";
+                        break;
+                    case "clear":
+                        output.innerHTML = ""; input.value = ""; return;
+                    case "stack":
+                        response = "MERN, Python, FastAPI, Flask, AWS, SQLite";
+                        break;
+                    case "cd /about":
+                        navigate('about'); response = "Navigating to /about..."; break;
+                    case "cd /projects":
+                        navigate('projects'); response = "Navigating to /projects..."; break;
+                    case "cd /contact":
+                        navigate('contact'); response = "Navigating to /contact..."; break;
+                    case "cat resume":
+                    case "get resume":
+                        response = "Opening resume.pdf securely...";
+                        window.open('https://harshitspace.in/resume', '_blank');
+                        break;
+                    case "":
+                        response = ""; break;
+                    default:
+                        response = `Command not found: ${cmd}. Type 'help'.`;
+                }
+
+                if (response) { output.innerHTML += `<p>${response}</p>`; }
+                input.value = "";
+                output.scrollTop = output.scrollHeight;
+            }
+        });
+    </script>
 </body>
 </html>
